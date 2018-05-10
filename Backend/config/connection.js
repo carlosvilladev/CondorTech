@@ -2,7 +2,7 @@ const mongoose = require('Mongoose')
 
 let connection = null
 let db = null
-connection = mongoose.connect('mongodb://foundation123:foundation123@ds125146.mlab.com:25146/foundation-test1')
+connection = mongoose.connect(process.env.MLAB_ENV)
 db = mongoose.connection
 
 db.once('open', () => {
