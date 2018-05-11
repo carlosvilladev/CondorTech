@@ -85,7 +85,12 @@ class CustomTable extends React.Component {
   constructor(props) {
     super(props)
     // this.state = this.props;
-    const defaultDate = "2017-02-02"
+    const date = new Date()
+    const day =  date.getDate()
+    const month = date.getMonth()+1
+    const year = date.getFullYear()
+    const date_s = `${year}-${month}-${day}`
+    const defaultDate = date_s
     this.state = {
       startDate: moment(defaultDate).utc().format('MM/DD/YYYY'),
       endDate: moment(defaultDate).utc().format('MM/DD/YYYY'),
