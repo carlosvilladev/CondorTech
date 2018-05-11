@@ -27,7 +27,7 @@ $ npm start
 ```
 
 
-# Base de datos
+# Database
 
 The Queries that consult the data in MySQL are described in the folder DB.
 And this is the order to execute it:
