@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "standard"
+    "lint": "standard",
+    "start": "node server.js"
   },
   "author": "kardotjs",
   "license": "ISC",
