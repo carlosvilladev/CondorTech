@@ -33,7 +33,9 @@ class Dashboard extends React.Component {
   state = {
     value: 0,
     total_average_time : 0,
-    data_requests_by_day : []
+    data_requests_by_day : [],
+    byMachines : {},
+    byComplianceStatus : {}
   };
 
   getTotalRequests = (cb) => {
@@ -61,9 +63,27 @@ class Dashboard extends React.Component {
     cb(requestsByDays)
   }
 
+  getRequestByMachines = () => {
+    const byMachines = JSON.parse(localStorage.getItem("byMachines"))
+    const labels = Object.keys(byMachines)
+    const values = Object.values(byMachines)
+    this.setState({byMachines : {labels : labels, series : [values]}})
+    console.log(labels, values)
+  }
+
+  getRequestByComplianceStatus = () => {
+    const byComplianceStatus = JSON.parse(localStorage.getItem("byComplianceStatus"))
+    const labels = Object.keys(byComplianceStatus)
+    const values = Object.values(byComplianceStatus)
+    this.setState({byComplianceStatus  : {labels : labels, series : [values]}})
+
+  }
+
   componentWillMount = () => {
     this.getTotalRequests((num, sum_times)=>{this.setState({total_average_time : Math.round((sum_times/num) || 0)})})    
     this.getRequestByDay((requestsByDays) => {this.setState({data_requests_by_day : requestsByDays})})
+    this.getRequestByMachines()
+    this.getRequestByComplianceStatus()
   }
 
 
@@ -125,7 +145,7 @@ class Dashboard extends React.Component {
                 chart={
                   <ChartistGraph
                     className="ct-chart"
-                    data={emailsSubscriptionChart.data}
+                    data={this.state.byMachines}
                     type="Bar"
                     options={emailsSubscriptionChart.options}
                     responsiveOptions={emailsSubscriptionChart.responsiveOptions}
@@ -141,24 +161,25 @@ class Dashboard extends React.Component {
             </ItemGrid>
         </Grid>
         <Grid container>
-          <ItemGrid xs={12} sm={12} md={12}>
-            <ChartCard
-              chart={
-                <ChartistGraph
-                  className="ct-chart"
-                  data={completedTasksChart.data}
-                  type="Line"
-                  options={completedTasksChart.options}
-                  listener={completedTasksChart.animation}
-                />
-              }
-              chartColor="red"
-              title="Total Requests per Compliance Status"
-              text=""
-              statIcon={AccessTime}
-              statText="..."
-            />
-          </ItemGrid>
+            <ItemGrid xs={12} sm={12} md={12}>
+              <ChartCard
+                chart={
+                  <ChartistGraph
+                    className="ct-chart"
+                    data={this.state.byComplianceStatus}
+                    type="Bar"
+                    options={emailsSubscriptionChart.options}
+                    responsiveOptions={emailsSubscriptionChart.responsiveOptions}
+                    listener={emailsSubscriptionChart.animation}
+                  />
+                }
+                chartColor="red"
+                title="Total Requests per Machine"
+                text=""
+                statIcon={AccessTime}
+                statText="..."
+              />
+            </ItemGrid>
         </Grid>
       </div>
     );

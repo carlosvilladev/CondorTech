@@ -22,7 +22,8 @@ import PropTypes from "prop-types";
 import tableStyle from "assets/jss/material-dashboard-react/tableStyle";
 import axios from 'axios'
 import axiosTiming from 'axios-timing'
-import moment from 'moment';
+import moment from 'moment'
+import _ from 'lodash'
 
 
 axios.interceptors.request.use((config)=>{
@@ -33,7 +34,9 @@ axios.interceptors.request.use((config)=>{
 axios.interceptors.response.use((response)=>{
   
   setDate(response.config.startTime)
-  setByDay(response.config.startTime)
+  getByDay(response.config.startTime)
+  getByMachine(response.data)
+  getByComplianceStatus(response.data)
   // const num1 = localStorage.getItem('total_requests')
   // const sum_times1 = localStorage.getItem('sum_times')
   // console.log(`Difference: ${total}, Numero de Requests: ${num1}, Suma de Tiempos: ${sum_times1}`)
@@ -51,7 +54,7 @@ const setDate = (startTime) => {
   localStorage.setItem('sum_times', parseInt(sum_times)+total)
 }
 
-const setByDay = (startTime) => {
+const getByDay = (startTime) => {
   const d = new Date()
   const weekday = new Array(7);
   weekday[0] =  "S";
@@ -73,6 +76,17 @@ const setByDay = (startTime) => {
   //const sum_times = localStorage.getItem('sum_times') || 0
 }
 
+const getByMachine = (data) => {
+  const byMachines = _.countBy(data, (v)=>{return v.cd_machine})
+  localStorage.setItem("byMachines", JSON.stringify(byMachines))
+  console.log(byMachines)
+}
+
+const getByComplianceStatus = (data) => {
+  const byComplianceStatus = _.countBy(data, (v)=>{return v.ds_compl_status_returned})
+  localStorage.setItem("byComplianceStatus", JSON.stringify(byComplianceStatus))
+  console.log(byComplianceStatus)
+}
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
