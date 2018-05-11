@@ -3,14 +3,10 @@ import PropTypes from "prop-types";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 import {
-  ContentCopy,
-  Store,
-  InfoOutline,
+  Timer,
   Warning,
-  DateRange,
-  LocalOffer,
-  Update,
   ArrowUpward,
+  Update,
   AccessTime,
   Accessibility
 } from "@material-ui/icons";
@@ -35,8 +31,42 @@ import dashboardStyle from "assets/jss/material-dashboard-react/dashboardStyle";
 
 class Dashboard extends React.Component {
   state = {
-    value: 0
+    value: 0,
+    total_average_time : 0,
+    data_requests_by_day : []
   };
+
+  getTotalRequests = (cb) => {
+    const num = localStorage.getItem('total_requests')
+    const sum_times = localStorage.getItem('sum_times')
+    cb(num, sum_times)
+    console.log(`Numero de Requests: ${num}, Suma de Tiempos: ${sum_times}`)
+  }
+
+  getRequestByDay = (cb) => {
+    const d = new Date()
+    const weekday = new Array(7);
+    weekday[0] =  "S";
+    weekday[1] = "M";
+    weekday[2] = "T";
+    weekday[3] = "W";
+    weekday[4] = "T";
+    weekday[5] = "F";
+    weekday[6] = "S";
+    
+    const requestsByDays = weekday.map((m)=>{
+      return parseInt(localStorage.getItem(m)) || 0
+    })
+    console.log(requestsByDays)
+    cb(requestsByDays)
+  }
+
+  componentWillMount = () => {
+    this.getTotalRequests((num, sum_times)=>{this.setState({total_average_time : Math.round((sum_times/num) || 0)})})    
+    this.getRequestByDay((requestsByDays) => {this.setState({data_requests_by_day : requestsByDays})})
+  }
+
+
   handleChange = (event, value) => {
     this.setState({ value });
   };
@@ -50,96 +80,68 @@ class Dashboard extends React.Component {
         <Grid container>
           <ItemGrid xs={12} sm={6} md={3}>
             <StatsCard
-              icon={ContentCopy}
+              icon={Timer}
               iconColor="orange"
-              title="Used Space"
-              description="49/50"
-              small="GB"
-              statIcon={Warning}
-              statIconColor="danger"
-              statLink={{ text: "Get More Space...", href: "#pablo" }}
-            />
-          </ItemGrid>
-          <ItemGrid xs={12} sm={6} md={3}>
-            <StatsCard
-              icon={Store}
-              iconColor="green"
-              title="Revenue"
-              description="$34,245"
-              statIcon={DateRange}
-              statText="Last 24 Hours"
-            />
-          </ItemGrid>
-          <ItemGrid xs={12} sm={6} md={3}>
-            <StatsCard
-              icon={InfoOutline}
-              iconColor="red"
-              title="Fixed Issues"
-              description="75"
-              statIcon={LocalOffer}
-              statText="Tracked from Github"
-            />
-          </ItemGrid>
-          <ItemGrid xs={12} sm={6} md={3}>
-            <StatsCard
-              icon={Accessibility}
-              iconColor="blue"
-              title="Followers"
-              description="+245"
+              title="Total Average Response Time"
+              description={this.state.total_average_time}
+              small="ms"
               statIcon={Update}
               statText="Just Updated"
             />
           </ItemGrid>
         </Grid>
         <Grid container>
-          <ItemGrid xs={12} sm={12} md={4}>
+          <ItemGrid xs={12} sm={12} md={12}>
             <ChartCard
               chart={
                 <ChartistGraph
                   className="ct-chart"
-                  data={dailySalesChart.data}
+                  data={{
+                    labels : ["M", "T", "W", "T", "F", "S", "S"],
+                    series: [[this.state.data_requests_by_day[1],
+                    this.state.data_requests_by_day[2], 
+                    this.state.data_requests_by_day[3], 
+                    this.state.data_requests_by_day[4], 
+                    this.state.data_requests_by_day[5],
+                    this.state.data_requests_by_day[6],
+                    this.state.data_requests_by_day[0]]]
+                  }}
                   type="Line"
                   options={dailySalesChart.options}
                   listener={dailySalesChart.animation}
                 />
               }
               chartColor="green"
-              title="Daily Sales"
-              text={
-                <span>
-                  <span className={this.props.classes.successText}>
-                    <ArrowUpward
-                      className={this.props.classes.upArrowCardCategory}
-                    />{" "}
-                    55%
-                  </span>{" "}
-                  increase in today sales.
-                </span>
-              }
+              title="Average Response Time per Day"
+              text=""
               statIcon={AccessTime}
-              statText="updated 4 minutes ago"
+              statText="..."
             />
           </ItemGrid>
-          <ItemGrid xs={12} sm={12} md={4}>
-            <ChartCard
-              chart={
-                <ChartistGraph
-                  className="ct-chart"
-                  data={emailsSubscriptionChart.data}
-                  type="Bar"
-                  options={emailsSubscriptionChart.options}
-                  responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                  listener={emailsSubscriptionChart.animation}
-                />
-              }
-              chartColor="orange"
-              title="Email Subscriptions"
-              text="Last Campaign Performance"
-              statIcon={AccessTime}
-              statText="campaign sent 2 days ago"
-            />
-          </ItemGrid>
-          <ItemGrid xs={12} sm={12} md={4}>
+        </Grid>
+        <Grid container>
+            <ItemGrid xs={12} sm={12} md={12}>
+              <ChartCard
+                chart={
+                  <ChartistGraph
+                    className="ct-chart"
+                    data={emailsSubscriptionChart.data}
+                    type="Bar"
+                    options={emailsSubscriptionChart.options}
+                    responsiveOptions={emailsSubscriptionChart.responsiveOptions}
+                    listener={emailsSubscriptionChart.animation}
+                  />
+                }
+                chartColor="orange"
+                title="Total Requests per Machine"
+                text=""
+                statIcon={AccessTime}
+                statText="..."
+              />
+            </ItemGrid>
+        </Grid>
+        <Grid container>
+          <ItemGrid xs={12} sm={12} md={12}>
             <ChartCard
               chart={
                 <ChartistGraph
@@ -151,34 +153,10 @@ class Dashboard extends React.Component {
                 />
               }
               chartColor="red"
-              title="Completed Tasks"
-              text="Last Campaign Performance"
+              title="Total Requests per Compliance Status"
+              text=""
               statIcon={AccessTime}
-              statText="campaign sent 2 days ago"
-            />
-          </ItemGrid>
-        </Grid>
-        <Grid container>
-          <ItemGrid xs={12} sm={12} md={6}>
-            <TasksCard />
-          </ItemGrid>
-          <ItemGrid xs={12} sm={12} md={6}>
-            <RegularCard
-              headerColor="orange"
-              cardTitle="Employees Stats"
-              cardSubtitle="New employees on 15th September, 2016"
-              content={
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={["ID", "Name", "Salary", "Country"]}
-                  tableData={[
-                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                    ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                    ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                    ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                  ]}
-                />
-              }
+              statText="..."
             />
           </ItemGrid>
         </Grid>

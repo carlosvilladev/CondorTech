@@ -25,7 +25,7 @@ const dailySalesChart = {
       tension: 0
     }),
     low: 0,
-    high: 50, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+    high: 100000, // I recommend you to set the high sa the biggest value + something for a better look
     chartPadding: {
       top: 0,
       right: 0,
@@ -182,6 +182,7 @@ const completedTasksChart = {
     }
   }
 };
+
 
 module.exports = {
   dailySalesChart,

@@ -1,4 +1,4 @@
-//import DashboardPage from "views/Dashboard/Dashboard.jsx";
+import DashboardPage from "views/Dashboard/Dashboard.jsx";
 //import UserProfile from "views/UserProfile/UserProfile.jsx";
 import TableList from "views/TableList/TableList.jsx";
 //import Typography from "views/Typography/Typography.jsx";
@@ -7,7 +7,8 @@ import TableList from "views/TableList/TableList.jsx";
 //import NotificationsPage from "views/Notifications/Notifications.jsx";
 
 import {
-  CloudQueue
+  CloudQueue,
+  InsertChart
 } from "@material-ui/icons";
 
 const dashboardRoutes = [
@@ -17,14 +18,14 @@ const dashboardRoutes = [
     navbarName: "Material Dashboard",
     icon: CloudQueue,
     component: TableList
-  }/*,
-  {
-    path: "/user",
-    sidebarName: "User Profile",
-    navbarName: "Profile",
-    icon: Person,
-    component: UserProfile
   },
+  {
+    path: "/stats",
+    sidebarName: "Statistics",
+    navbarName: "Profile",
+    icon: InsertChart,
+    component: DashboardPage
+  }/*,
   {
     path: "/table",
     sidebarName: "Table List",

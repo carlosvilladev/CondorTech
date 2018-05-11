@@ -21,7 +21,58 @@ import PropTypes from "prop-types";
 
 import tableStyle from "assets/jss/material-dashboard-react/tableStyle";
 import axios from 'axios'
+import axiosTiming from 'axios-timing'
 import moment from 'moment';
+
+
+axios.interceptors.request.use((config)=>{
+  config.startTime = new Date().getTime()
+  return config;
+})
+
+axios.interceptors.response.use((response)=>{
+  
+  setDate(response.config.startTime)
+  setByDay(response.config.startTime)
+  // const num1 = localStorage.getItem('total_requests')
+  // const sum_times1 = localStorage.getItem('sum_times')
+  // console.log(`Difference: ${total}, Numero de Requests: ${num1}, Suma de Tiempos: ${sum_times1}`)
+  // console.log(`${total} ms`)
+  return response;
+})
+
+const setDate = (startTime) => {
+  const date = new Date().getTime()
+  const total = date - startTime
+  const num = localStorage.getItem('total_requests') || 0
+  const sum_times = localStorage.getItem('sum_times') || 0
+
+  localStorage.setItem('total_requests', parseInt(num)+1)
+  localStorage.setItem('sum_times', parseInt(sum_times)+total)
+}
+
+const setByDay = (startTime) => {
+  const d = new Date()
+  const weekday = new Array(7);
+  weekday[0] =  "S";
+  weekday[1] = "M";
+  weekday[2] = "T";
+  weekday[3] = "W";
+  weekday[4] = "T";
+  weekday[5] = "F";
+  weekday[6] = "S";
+  const day = weekday[d.getDay()]
+
+  const date = new Date().getTime()
+  const total = date - startTime
+  
+  const req_by_day = localStorage.getItem(day) || 0
+  localStorage.setItem(day,parseInt(total)+parseInt(req_by_day))
+  console.log(localStorage.getItem(day))
+  //const num = localStorage.getItem('total_requests') || 0
+  //const sum_times = localStorage.getItem('sum_times') || 0
+}
+
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -98,6 +149,7 @@ class CustomTable extends React.Component {
     }
   }
 
+  
   getLogs = (startDate, endDate, status = 'FL') => {
     return axios.get(`https://api.cebroker.com/v1/cerenewaltransactions/GetLogsRecordData?startdate=${startDate}&enddate=${endDate}&state=${status}`, {
       responseType: 'json'
@@ -149,7 +201,7 @@ class CustomTable extends React.Component {
       const tableData = response.data.map(item => {
         return item
       })
-
+      axiosTiming(axios, timeInMs => console.log(`${timeInMs.toFixed}ms`))
       this.setState({ ...this.state, tableData });
     })
   };
