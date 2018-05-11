@@ -1,6 +1,7 @@
 const ProvidersDAO = require('./providers-dao')
 const mongoose = require('../../config/connection')
 
+//Save Provider function with Async Await
 exports.saveProvider = async (req, res, next) => {
   try{
 
@@ -10,13 +11,13 @@ exports.saveProvider = async (req, res, next) => {
         if(provider) return res.status(200).json({msg : 'Provider correctly saved', provider : provider})
         else return res.status(404).json({msg : "No se guardó el documento"})
       })
-      
-
   }catch(e){
     console.log(e)
     return res.status(500).json({msg: 'Sorry. This is a Server Error. We are fixing it the most quickly we can', error : e})
   }
 };
+
+//Get All Providers function with Async Await
 exports.getAll = async (req, res, next) => {
   try {
     let providers = await ProvidersDAO.getAll()
@@ -27,6 +28,8 @@ exports.getAll = async (req, res, next) => {
     res.status(500).json({msg: 'Sorry. This is a Server Error. We are fixing it the most quickly we can', error : e})
   }
 }
+
+//Get one Provider by Id, function with Async Await
 exports.getById = async (req, res, next) => {
   try{
     let id = req.params.id
@@ -38,6 +41,8 @@ exports.getById = async (req, res, next) => {
     res.status(500).json({msg: 'Sorry. This is a Server Error. We are fixing it the most quickly we can', error : e})
   }
 }
+
+//Update Provider function with Async Await
 exports.updateProvider = async (req, res, next) => {
   try{
 
@@ -53,6 +58,8 @@ exports.updateProvider = async (req, res, next) => {
     return res.status(500).json({msg: "Sorry. This is a Server Error. We are fixing it the most quickly we can", error : e})
   }
 };
+
+//Delete Provider function with Async Await
 exports.deleteProvider = async (req, res, next) => {
   try{
       let id = req.params.id
