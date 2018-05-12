@@ -50,8 +50,8 @@ const setDate = (startTime) => {
   const num = localStorage.getItem('total_requests') || 0
   const sum_times = localStorage.getItem('sum_times') || 0
 
-  localStorage.setItem('total_requests', parseInt(num)+1)
-  localStorage.setItem('sum_times', parseInt(sum_times)+total)
+  localStorage.setItem('total_requests', parseInt(num,1)+1)
+  localStorage.setItem('sum_times', parseInt(sum_times,1)+total)
 }
 
 const getByDay = (startTime) => {
@@ -94,7 +94,7 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { order, orderBy, rowCount, className } = this.props;
+    const { order, orderBy, className } = this.props;
     const columns = [
       { id: "cd_cebroker_state", numeric: false, disablePadding: false, label: "State Code" },
       { id: "pro_cde", numeric: true, disablePadding: true, label: "Pro Code" },
@@ -261,8 +261,8 @@ class CustomTable extends React.Component {
   }
 
   render() {
-    const { classes, tableHead, tableHeaderColor } = this.props
-    const { data, order, orderBy, rowsPerPage, page, tableData, defaultDate } = this.state
+    const { classes, tableHeaderColor } = this.props
+    const { order, orderBy, rowsPerPage, page, tableData, defaultDate } = this.state
 
     return (
       <div>
@@ -394,8 +394,8 @@ CustomTable.defaultProps = {
 };
 
 CustomTable.propTypes = {
-  order: 'asc',
-  orderBy: 'sld',
+  order: PropTypes.string,
+  orderBy: PropTypes.string,
   classes: PropTypes.object.isRequired,
   tableHeaderColor: PropTypes.oneOf([
     "warning",
@@ -408,9 +408,9 @@ CustomTable.propTypes = {
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.string),
   tableData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-  page: 0,
-  rowsPerPage: 20,
-  stateCode: 'FL'
+  page: PropTypes.number,
+  rowsPerPage: PropTypes.number,
+  stateCode: PropTypes.string
 };
 
 export default withStyles(tableStyle)(CustomTable);

@@ -2,7 +2,6 @@ import React from "react";
 import { Grid } from "material-ui";
 
 import { RegularCard, Table, ItemGrid } from "components";
-import axios from 'axios'
 
 
 class TableList extends React.Component{

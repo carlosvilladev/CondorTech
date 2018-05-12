@@ -4,27 +4,20 @@ import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import {
   Timer,
-  Warning,
-  ArrowUpward,
   Update,
-  AccessTime,
-  Accessibility
+  AccessTime
 } from "@material-ui/icons";
 import { withStyles, Grid } from "material-ui";
 
 import {
   StatsCard,
   ChartCard,
-  TasksCard,
-  RegularCard,
-  Table,
   ItemGrid
 } from "components";
 
 import {
   dailySalesChart,
-  emailsSubscriptionChart,
-  completedTasksChart
+  emailsSubscriptionChart
 } from "variables/charts";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/dashboardStyle";
@@ -46,7 +39,6 @@ class Dashboard extends React.Component {
   }
 
   getRequestByDay = (cb) => {
-    const d = new Date()
     const weekday = new Array(7);
     weekday[0] =  "S";
     weekday[1] = "M";
